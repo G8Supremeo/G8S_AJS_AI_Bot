@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="nebula-dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AstraForge Chat Lab</title>
+    <meta name="description"
+        content="Creative ChatGPT-like clone built with native JavaScript and free OpenRouter models.">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="nebula-backdrop" aria-hidden="true">
+        <div class="aurora aurora-a"></div>
+        <div class="aurora aurora-b"></div>
+        <div class="grid-overlay"></div>
+    </div>
+
+    <div class="layout" id="app">
+        <aside class="sidebar" id="sidebar">
+            <div class="brand-row">
+                <h1>G8S_AJS_AI_Bot</h1>
+                <button id="sidebar-toggle" class="icon-btn" aria-label="Close menu">✕</button>
+            </div>
+
+            <p class="brand-subtitle">Creative AI studio built with pure HTML, CSS and JavaScript.</p>
+
+            <button class="primary-btn" id="new-chat-btn">✨ New Session</button>
+
+            <section class="panel">
+                <h2>🧭 Session Timeline</h2>
+                <div id="history-list" class="history-list"></div>
+            </section>
+
+            <section class="panel">
+                <h2>💡 Prompt Starters</h2>
+                <div class="chips" id="prompt-chips">
+                    <button class="chip" data-prompt="Design a 7-day study plan to learn JavaScript deeply.">🗓️ Study
+                        Plan</button>
+                    <button class="chip" data-prompt="Generate a modern landing page hero copy for an AI startup.">🚀
+                        Hero Copy</button>
+                    <button class="chip" data-prompt="Explain APIs, JSON and fetch for beginners with examples.">🔌 API
+                        + JSON</button>
+                    <button class="chip"
+                        data-prompt="Create a Python script that renames files safely with rollback logic.">🐍 Python
+                        Utility</button>
+                    <button class="chip"
+                        data-prompt="Write a professional outreach email to a recruiter for a Data Science role.">📫
+                        Email
+                        Draft</button>
+                    <button class="chip"
+                        data-prompt="Explain the core differences between React and Vue.js in simple terms.">⚔️ React vs
+                        Vue</button>
+                    <button class="chip"
+                        data-prompt="Help me debug a 'CORS policy blocked' error in my frontend fetch request.">🐛 Debug
+                        CORS</button>
+                </div>
+            </section>
+
+            <div class="sidebar-footer">
+                <button id="settings-btn" class="ghost-btn">⚙️ Settings</button>
+                <button id="clear-all-btn" class="ghost-btn danger">🗑️ Clear All</button>
+            </div>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <button id="mobile-menu-btn" class="icon-btn" aria-label="Open menu">☰</button>
+
+                <div class="controls">
+                    <label>
+                        🤖 Model
+                        <select id="model-select">
+                            <option value="google/gemma-3-27b-it:free">Gemma 3 27B (free)</option>
+                            <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B (free)</option>
+                            <option value="mistralai/mistral-small-3.1-24b-instruct:free">Mistral Small 3.1 (free)
+                            </option>
+                            <option value="nousresearch/hermes-3-llama-3.1-405b:free">Hermes 3 Llama 3.1 405B (free)
+                            </option>
+                            <option value="qwen/qwen3-coder:free">Qwen3 Coder (free)</option>
+                        </select>
+                    </label>
+                    <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">🌙</button>
+                </div>
+            </header>
+
+            <section class="chat-stream" id="chat-messages">
+                <div class="welcome" id="welcome-screen">
+                    <p class="eyebrow">AstraForge Chat Lab</p>
+                    <h2>Build, test and evolve prompts like a pro.</h2>
+                    <p>
+                        Ask anything. Switch models. Save sessions automatically.
+                        You can also use voice input and markdown-rich responses.
+                    </p>
+                </div>
+            </section>
+
+            <div class="typing hidden" id="typing-indicator">
+                <span></span><span></span><span></span>
+                <small>🤔 Model is generating...</small>
+            </div>
+
+            <section class="composer">
+                <textarea id="chat-input" rows="1"
+                    placeholder="Type your prompt. Press Enter to send, Shift + Enter for newline."></textarea>
+                <div class="composer-actions">
+                    <button id="voice-btn" class="icon-btn" aria-label="Voice input">🎙️</button>
+                    <button id="send-btn" class="primary-btn" disabled>🚀 Send</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="sidebar-overlay" class="overlay hidden"></div>
+
+    <dialog id="settings-modal">
+        <form method="dialog" class="settings-card">
+            <div class="settings-head">
+                <h3>⚙️ Workspace Settings</h3>
+                <button id="settings-close-btn" class="icon-btn" value="cancel">✕</button>
+            </div>
+
+            <div>
+                <label for="api-key-input" style="display: block; margin-bottom: 0.45rem;">🔑 OpenRouter API key</label>
+                <div class="inline-field">
+                    <input id="api-key-input" type="password"
+                        placeholder="Leave blank to use default key, or enter your own">
+                    <button id="toggle-key-visibility" type="button" class="icon-btn">👁️</button>
+                </div>
+            </div>
+
+            <label>
+                🧠 System prompt
+                <textarea id="system-prompt-input"
+                    rows="4">You are AstraForge, an expert but friendly AI coding and strategy assistant. Explain clearly, structure answers, and provide safe practical steps.</textarea>
+            </label>
+
+            <label>
+                📏 Max tokens: <span id="max-tokens-value">1200</span>
+                <input id="max-tokens-input" type="range" min="200" max="4096" step="100" value="1200">
+            </label>
+
+            <label>
+                🌡️ Temperature: <span id="temperature-value">0.7</span>
+                <input id="temperature-input" type="range" min="0" max="2" step="0.1" value="0.7">
+            </label>
+
+            <label>
+                🎨 Accent color
+                <input id="accent-color-input" type="color" value="#8a7dff">
+            </label>
+
+            <label>
+                🔠 Base font size: <span id="font-size-value">16</span>px
+                <input id="font-size-input" type="range" min="14" max="20" step="1" value="16">
+            </label>
+
+            <button id="save-settings-btn" type="button" class="primary-btn full">💾 Save Settings</button>
+        </form>
+    </dialog>
+
+    <script src="./js/app.js"></script>
+</body>
+
+</html>
