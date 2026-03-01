@@ -243,6 +243,7 @@ class ChatApp {
             promptChips: document.getElementById("prompt-chips"),
             clearAllBtn: document.getElementById("clear-all-btn"),
             settingsBtn: document.getElementById("settings-btn"),
+            exportBtn: document.getElementById("export-btn"),
             settingsModal: document.getElementById("settings-modal"),
             settingsCloseBtn: document.getElementById("settings-close-btn"),
             saveSettingsBtn: document.getElementById("save-settings-btn"),
@@ -262,6 +263,7 @@ class ChatApp {
             welcomeScreen: document.getElementById("welcome-screen"),
             typingIndicator: document.getElementById("typing-indicator"),
             chatInput: document.getElementById("chat-input"),
+            tokenCounter: document.getElementById("token-counter"),
             sendBtn: document.getElementById("send-btn"),
             voiceBtn: document.getElementById("voice-btn")
         };
@@ -322,6 +324,9 @@ class ChatApp {
             event.preventDefault();
             this.closeSettings();
         });
+        if (this.dom.exportBtn) {
+            this.dom.exportBtn.addEventListener("click", () => this.exportChat());
+        }
         this.dom.saveSettingsBtn.addEventListener("click", () => this.saveSettingsFromForm());
         this.dom.toggleKeyVisibility.addEventListener("click", () => this.toggleApiKeyVisibility());
         this.dom.clearAllBtn.addEventListener("click", () => this.clearAllSessions());
@@ -425,7 +430,13 @@ class ChatApp {
     onInputChange() {
         this.dom.chatInput.style.height = "auto";
         this.dom.chatInput.style.height = `${Math.min(this.dom.chatInput.scrollHeight, 180)}px`;
-        this.dom.sendBtn.disabled = this.dom.chatInput.value.trim() === "" || this.state.isGenerating;
+        const text = this.dom.chatInput.value;
+        this.dom.sendBtn.disabled = text.trim() === "" || this.state.isGenerating;
+
+        if (this.dom.tokenCounter) {
+            const estimatedTokens = Math.ceil(text.length / 4);
+            this.dom.tokenCounter.textContent = `🪙 ~${estimatedTokens} tokens`;
+        }
     }
 
     applyVoiceText(text) {
@@ -525,6 +536,7 @@ class ChatApp {
         this.dom.chatInput.value = "";
         this.state.isGenerating = true;
         this.onInputChange();
+        this.startTypingSound();
         this.renderAll();
 
         try {
@@ -547,6 +559,7 @@ class ChatApp {
             this.toast(error.message, "error");
         } finally {
             this.state.isGenerating = false;
+            this.stopTypingSound();
             this.saveState();
             this.renderAll();
         }
@@ -633,6 +646,77 @@ class ChatApp {
         toast.textContent = text;
         stack.appendChild(toast);
         setTimeout(() => toast.remove(), 2800);
+    }
+
+    exportChat() {
+        const session = this.activeSession;
+        if (!session || session.messages.length === 0) {
+            this.toast("No messages to export yet.", "error");
+            return;
+        }
+
+        let content = `# ${session.title}\n\n`;
+        session.messages.forEach(msg => {
+            const role = msg.role === "user" ? "You" : "🤖 AstraForge";
+            content += `### ${role}\n${msg.content}\n\n---\n\n`;
+        });
+
+        const blob = new Blob([content], { type: "text/markdown" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `Chat_Export_${new Date().toISOString().slice(0, 10)}.md`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        this.toast("Chat exported successfully!", "success");
+    }
+
+    startTypingSound() {
+        if (!window.AudioContext && !window.webkitAudioContext) return;
+        if (!this.audioCtx) {
+            this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (this.audioCtx.state === 'suspended') {
+            this.audioCtx.resume();
+        }
+
+        this.isTypingSoundPlaying = true;
+
+        const playTick = () => {
+            if (!this.isTypingSoundPlaying) return;
+            try {
+                const osc = this.audioCtx.createOscillator();
+                const gain = this.audioCtx.createGain();
+
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(600 + Math.random() * 200, this.audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, this.audioCtx.currentTime + 0.05);
+
+                gain.gain.setValueAtTime(0, this.audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.05, this.audioCtx.currentTime + 0.01);
+                gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + 0.05);
+
+                osc.connect(gain);
+                gain.connect(this.audioCtx.destination);
+
+                osc.start(this.audioCtx.currentTime);
+                osc.stop(this.audioCtx.currentTime + 0.06);
+            } catch (e) { }
+
+            this.typingSoundTimeout = setTimeout(playTick, 50 + Math.random() * 100);
+        };
+
+        playTick();
+    }
+
+    stopTypingSound() {
+        this.isTypingSoundPlaying = false;
+        if (this.typingSoundTimeout) {
+            clearTimeout(this.typingSoundTimeout);
+        }
     }
 }
 
