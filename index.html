@@ -64,6 +64,7 @@
             </section>
 
             <div class="sidebar-footer">
+                <button id="export-btn" class="ghost-btn">💾 Export Chat</button>
                 <button id="settings-btn" class="ghost-btn">⚙️ Settings</button>
                 <button id="clear-all-btn" class="ghost-btn danger">🗑️ Clear All</button>
             </div>
@@ -110,6 +111,9 @@
                 <textarea id="chat-input" rows="1"
                     placeholder="Type your prompt. Press Enter to send, Shift + Enter for newline."></textarea>
                 <div class="composer-actions">
+                    <span id="token-counter"
+                        style="margin-right: auto; align-self: center; font-size: 0.85rem; color: var(--text-soft);"
+                        title="Estimated Tokens">🪙 0 tokens</span>
                     <button id="voice-btn" class="icon-btn" aria-label="Voice input">🎙️</button>
                     <button id="send-btn" class="primary-btn" disabled>🚀 Send</button>
                 </div>
