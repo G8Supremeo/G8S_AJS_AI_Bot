@@ -1,14 +1,14 @@
 const STORAGE_KEYS = {
-    settings: "astra_settings_v3", // Bumped to v3 to guarantee full browser reset
-    sessions: "astra_sessions_v2"  // Bumped sessions as well for a clean slate
+    settings: "astra_settings_v6", // Bumped to v6 for the model limit constraint
+    sessions: "astra_sessions_v2"
 };
 
-const FALLBACK_API_KEY = "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";
+const FALLBACK_API_KEY = "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";
 
 const DEFAULT_SETTINGS = {
     apiKey: "",
-    model: "google/gemma-3-27b-it:free",
-    systemPrompt: "You are AstraForge, an expert but friendly AI coding and strategy assistant. Explain clearly, structure answers, and provide safe practical steps.",
+    model: "openrouter/free",
+    systemPrompt: "You are Amere, an expert but friendly AI coding and strategy assistant. Explain clearly, structure answers, and provide safe practical steps.",
     maxTokens: 1200,
     temperature: 0.7,
     theme: "nebula-dark",
@@ -16,37 +16,13 @@ const DEFAULT_SETTINGS = {
     fontSize: 16
 };
 
-// Complete list of currently active free models
+// Complete list of exactly 5 active free models
 let MODELS = [
     "openrouter/free",
-    "stepfun/step-3.5-flash:free",
-    "arcee-ai/trinity-large-preview:free",
-    "upstage/solar-pro-3:free",
-    "liquid/lfm-2.5-1.2b-thinking:free",
-    "liquid/lfm-2.5-1.2b-instruct:free",
-    "nvidia/nemotron-3-nano-30b-a3b:free",
-    "arcee-ai/trinity-mini:free",
-    "nvidia/nemotron-nano-12b-v2-vl:free",
-    "qwen/qwen3-vl-30b-a3b-thinking",
-    "qwen/qwen3-vl-235b-a22b-thinking",
-    "qwen/qwen3-next-80b-a3b-instruct:free",
-    "nvidia/nemotron-nano-9b-v2:free",
-    "openai/gpt-oss-120b:free",
-    "openai/gpt-oss-20b:free",
-    "z-ai/glm-4.5-air:free",
-    "qwen/qwen3-235b-a22b-thinking-2507",
-    "qwen/qwen3-coder:free",
-    "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
-    "google/gemma-3n-e2b-it:free",
-    "google/gemma-3n-e4b-it:free",
-    "qwen/qwen3-4b:free",
-    "mistralai/mistral-small-3.1-24b-instruct:free",
-    "google/gemma-3-4b-it:free",
-    "google/gemma-3-12b-it:free",
-    "google/gemma-3-27b-it:free",
+    "google/gemini-2.0-flash-lite-preview-02-05:free",
     "meta-llama/llama-3.3-70b-instruct:free",
-    "meta-llama/llama-3.2-3b-instruct:free",
-    "nousresearch/hermes-3-llama-3.1-405b:free"
+    "mistralai/mistral-small-3.1-24b-instruct:free",
+    "qwen/qwen-vl-plus:free"
 ];
 
 class StorageService {
@@ -272,6 +248,7 @@ class ChatApp {
     init() {
         this.loadState();
         this.bindEvents();
+        this.fixSidebarHeight();
         this.applySettingsToUI();
         this.ensureSession();
         this.renderAll();
@@ -318,6 +295,12 @@ class ChatApp {
         this.dom.mobileMenuBtn.addEventListener("click", () => this.openSidebar());
         this.dom.sidebarToggle.addEventListener("click", () => this.closeSidebar());
         this.dom.sidebarOverlay.addEventListener("click", () => this.closeSidebar());
+
+        // Recalculate sidebar height when viewport changes (rotation, keyboard open/close)
+        window.addEventListener("resize", () => this.fixSidebarHeight());
+        window.addEventListener("orientationchange", () => {
+            setTimeout(() => this.fixSidebarHeight(), 150);
+        });
 
         this.dom.settingsBtn.addEventListener("click", () => this.openSettings());
         this.dom.settingsCloseBtn.addEventListener("click", (event) => {
@@ -457,6 +440,7 @@ class ChatApp {
     }
 
     openSidebar() {
+        this.fixSidebarHeight();
         this.dom.sidebar.classList.add("open");
         this.dom.sidebarOverlay.classList.remove("hidden");
     }
@@ -464,6 +448,11 @@ class ChatApp {
     closeSidebar() {
         this.dom.sidebar.classList.remove("open");
         this.dom.sidebarOverlay.classList.add("hidden");
+    }
+
+    // Use window.innerHeight instead of CSS vh/dvh/svh — Samsung browsers report this accurately
+    fixSidebarHeight() {
+        this.dom.sidebar.style.height = window.innerHeight + "px";
     }
 
     openSettings() {
@@ -657,7 +646,7 @@ class ChatApp {
 
         let content = `# ${session.title}\n\n`;
         session.messages.forEach(msg => {
-            const role = msg.role === "user" ? "You" : "🤖 AstraForge";
+            const role = msg.role === "user" ? "You" : "🤖 Amere";
             content += `### ${role}\n${msg.content}\n\n---\n\n`;
         });
 

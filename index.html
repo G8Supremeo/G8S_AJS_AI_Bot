@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AstraForge Chat Lab</title>
+    <title>Amere Chat Lab</title>
     <meta name="description"
         content="Creative ChatGPT-like clone built with native JavaScript and free OpenRouter models.">
     <link rel="stylesheet" href="./css/style.css">
@@ -25,7 +25,7 @@
     <div class="layout" id="app">
         <aside class="sidebar" id="sidebar">
             <div class="brand-row">
-                <h1>G8S_AJS_AI_Bot</h1>
+                <h1>Amere Bot</h1>
                 <button id="sidebar-toggle" class="icon-btn" aria-label="Close menu">✕</button>
             </div>
 
@@ -78,13 +78,13 @@
                     <label>
                         🤖 Model
                         <select id="model-select">
-                            <option value="google/gemma-3-27b-it:free">Gemma 3 27B (free)</option>
+                            <option value="openrouter/free">OpenRouter Auto (Stable & Free)</option>
+                            <option value="google/gemini-2.0-flash-lite-preview-02-05:free">Gemini 2.0 Flash Lite (free)
+                            </option>
                             <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B (free)</option>
                             <option value="mistralai/mistral-small-3.1-24b-instruct:free">Mistral Small 3.1 (free)
                             </option>
-                            <option value="nousresearch/hermes-3-llama-3.1-405b:free">Hermes 3 Llama 3.1 405B (free)
-                            </option>
-                            <option value="qwen/qwen3-coder:free">Qwen3 Coder (free)</option>
+                            <option value="qwen/qwen-vl-plus:free">Qwen VL Plus (free)</option>
                         </select>
                     </label>
                     <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">🌙</button>
@@ -93,7 +93,7 @@
 
             <section class="chat-stream" id="chat-messages">
                 <div class="welcome" id="welcome-screen">
-                    <p class="eyebrow">AstraForge Chat Lab</p>
+                    <p class="eyebrow">Amere Chat Lab</p>
                     <h2>Build, test and evolve prompts like a pro.</h2>
                     <p>
                         Ask anything. Switch models. Save sessions automatically.
@@ -142,7 +142,7 @@
             <label>
                 🧠 System prompt
                 <textarea id="system-prompt-input"
-                    rows="4">You are AstraForge, an expert but friendly AI coding and strategy assistant. Explain clearly, structure answers, and provide safe practical steps.</textarea>
+                    rows="4">You are Amere, an expert but friendly AI coding and strategy assistant. Explain clearly, structure answers, and provide safe practical steps.</textarea>
             </label>
 
             <label>

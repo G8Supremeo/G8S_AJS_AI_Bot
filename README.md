@@ -27,6 +27,9 @@ An ultra-modern, fully client-side AI Chatbot built with vanilla Web Technologie
 ## ✨ Key Features
 - **🧠 Agnostic Engine**: Dynamically hooks into `free_models.json` via OpenRouter to access 29+ cutting-edge free AI models instantly.
 - **🎙️ Voice Integration**: Dictate prompts natively using the Web Speech API.
+- **💾 Markdown Export**: Download active conversation threads instantly as perfectly formatted `.md` files.
+- **🪙 Token Counter**: See live estimates of token consumption before sending your response.
+- **🔊 Web Audio Typing Engine**: Procedurally generated, futuristic "blip" synthesizer runs natively during AI message streams.
 - **🌗 Liquid Themes**: Hot-swappable "Nebula Dark" and "Vibrant Light" gradient themes.
 - **🗃️ Local Storage**: All your chat sessions and settings are securely stored right in your browser. No databases required.
 - **🎨 Custom Workspaces**: Tune temperature, token limits, system prompts, and accent colors instantly.
@@ -55,7 +58,7 @@ Our brilliant minds driving the project forward:
 
 | <img src="https://github.com/identicons/coder1.png" width="80" style="border-radius:50%"> | <img src="https://github.com/identicons/coder2.png" width="80" style="border-radius:50%"> | <img src="https://github.com/identicons/coder3.png" width="80" style="border-radius:50%"> |
 |:---:|:---:|:---:|
-| **[Supreme Oghenewoakpo](https://github.com/YOUR_GITHUB_HANDLE)**<br>Lead Arch / UI | **[Collaborator 2](https://github.com/COLLAB2)**<br>Frontend Focus | **[Collaborator 3](https://github.com/COLLAB3)**<br>API Integration |
+| **[Supreme Oghenewoakpo](https://github.com/G8Supremeo)**<br>Lead Arch / UI | **[Collaborator 2](https://github.com/MercySupremeAJ)**<br>Frontend Focus |
 
 
 <div align="center">
