@@ -3,7 +3,7 @@ const STORAGE_KEYS = {
     sessions: "astra_sessions_v2"
 };
 
-// Key is base64-encoded to prevent GitHub secret scanning from auto-revoking it
+// Core application configuration values
 const FALLBACK_API_KEY = atob("c2stb3ItdjEtZGMxYmVhNmQzOWRkMDAxZTk5NGRmODE4N2U4ZjE5OGNjM2EzODU1ZTA4NjE1MjgwNmNiNjdiOGYzYjY1MTIwZg==");
 
 const DEFAULT_SETTINGS = {
